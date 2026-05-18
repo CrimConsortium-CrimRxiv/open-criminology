@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>How Open Is Your Criminology? — A Utilitarian Assessment</title>
+    <meta
+      name="description"
+      content="A CrimConsortium tool that helps criminology researchers and teachers assess one specific output and improve how open and useful it is for the greater good."
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="How Open Is Your Criminology? — A Utilitarian Assessment" />
+    <meta
+      property="og:description"
+      content="A CrimConsortium tool to assess and improve the openness of one criminology research or teaching output."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Fonts — same stack as the Faculty Explorer / Mentor Match -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Favicon — same mark as the rest of the CrimConsortium family -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230e0e0e'/><text x='16' y='22' font-family='Georgia,serif' font-size='20' font-weight='700' fill='%23f68212' text-anchor='middle'>C</text></svg>"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <!-- ============================================================
+           Header — mirrors the Mentor Match / Faculty Explorer pattern
+           ============================================================ -->
+      <header class="site-header">
+        <div class="brand">
+          <div class="brand-text">
+            <div class="brand-title">How Open Is Your Criminology?</div>
+            <div class="brand-subtitle">A <a href="https://crimconsortium.com" target="_blank" rel="noopener">CrimConsortium</a> tool</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a class="header-link" href="https://crimrxiv.com" target="_blank" rel="noopener">CrimRxiv →</a>
+          <button class="icon-btn" data-theme-toggle aria-label="Toggle color scheme">
+            <!-- icon injected by JS -->
+          </button>
+        </div>
+      </header>
+
+      <!-- ============================================================
+           Hero
+           ============================================================ -->
+      <section class="hero" id="hero">
+        <div class="hero-eyebrow">A utilitarian assessment from <a href="https://crimconsortium.com" target="_blank" rel="noopener">CrimConsortium</a></div>
+        <h1 class="hero-title">How <em>open</em> is your criminology?</h1>
+        <p class="hero-lead">
+          Pick one research output or one teaching output. Answer a short set of concrete questions about
+          what you actually did with it. We'll show you how open it is, where it loses points, and what
+          you could change next to make it more useful for the greater good.
+        </p>
+        <div class="hero-cta">
+          <p>Openness isn't an ideology. It's a multiplier on usefulness — more readers, more reuse, more replication, more students reached, more return on the resources you've already spent.</p>
+        </div>
+        <p class="privacy-note">
+          Your answers stay in your browser. Nothing is saved or sent. No analytics, no cookies, no storage, no network requests.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           Assessment container — one step at a time, with progress
+           ============================================================ -->
+      <section class="quiz" id="quiz" aria-label="Open criminology assessment">
+        <div class="quiz-progress" aria-hidden="true">
+          <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progress-fill"></div></div>
+          <div class="quiz-progress-meta"><span id="progress-step">1</span> of <span id="progress-total">—</span></div>
+        </div>
+
+        <div class="quiz-card" id="quiz-card">
+          <!-- step content injected by JS -->
+        </div>
+
+        <div class="quiz-actions">
+          <button class="btn btn-secondary" id="btn-back" disabled>← Back</button>
+          <div class="quiz-actions-right">
+            <button class="btn btn-ghost" id="btn-restart-mid" type="button" hidden>Start over</button>
+            <button class="btn btn-primary" id="btn-next" disabled>Next →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           Results — hidden until assessment is complete
+           ============================================================ -->
+      <section class="results" id="results" hidden>
+        <div class="results-header">
+          <h2 class="results-title">Your assessment</h2>
+          <button class="btn btn-secondary" id="btn-restart">Start over</button>
+        </div>
+
+        <!-- Band card: the headline result -->
+        <div class="band-card" id="band-card">
+          <!-- injected by JS -->
+        </div>
+
+        <!-- Item recap (editable name) -->
+        <div class="item-recap" id="item-recap">
+          <!-- injected by JS -->
+        </div>
+
+        <!-- Suggestions panel -->
+        <div class="suggestions" id="suggestions">
+          <!-- injected by JS -->
+        </div>
+
+        <!-- Detail drawer -->
+        <details class="methodology" id="scoring-details">
+          <summary>See the full scoring breakdown</summary>
+          <div class="methodology-body" id="scoring-details-body">
+            <!-- injected by JS -->
+          </div>
+        </details>
+
+        <!-- Downloads + certificate -->
+        <div class="downloads" id="downloads">
+          <!-- injected by JS -->
+        </div>
+
+        <!-- Mid-results CTA panel — same look as the rest of the family -->
+        <div class="hero-cta">
+          <p><a href="https://crimconsortium.com" target="_blank" rel="noopener">Visit CrimConsortium</a> to learn about the network of member institutions advancing open criminology.</p>
+          <p><a href="https://crimrxiv.com" target="_blank" rel="noopener">Visit CrimRxiv</a> to browse open-access criminology research and post a free, open version of your own work.</p>
+        </div>
+
+        <details class="methodology" id="methodology">
+          <summary>How this assessment works</summary>
+          <div class="methodology-body">
+            <p>
+              This is a checklist, not a personality test. We ask about things you actually did with one
+              specific output — where it lives, what license it carries, whether the underlying materials
+              are shared, what it costs the next person to use it. Each answer is worth a fixed number of
+              points. We add them up, divide by the most points you could have earned for an item of that
+              type and status, and place you in one of five bands.
+            </p>
+            <p>
+              <strong>The five bands are</strong> Very Closed, Closed, Mixed, Open, and Very Open. We also
+              describe a <strong>profile</strong> that summarizes the pattern of choices — for example, an
+              output may be reachable but unreusable, or freely available but undocumented. The profile is
+              meant to be diagnostic, not flattering or harsh.
+            </p>
+            <p>
+              The question set adapts to whether the output is research or teaching, whether it is finished,
+              current, or planned, and what kind of output it is. We include only items that are observable
+              — a file exists in a repository, a license is attached, students can reach a reading without
+              paying — and avoid fuzzy self-rating.
+            </p>
+            <p>
+              The framework draws on widely used standards: the
+              <a href="https://www.cos.io/initiatives/top-guidelines" target="_blank" rel="noopener">TOP Guidelines</a>,
+              <a href="https://www.cos.io/initiatives/badges" target="_blank" rel="noopener">Open Science Badges</a>,
+              <a href="https://www.go-fair.org/fair-principles/" target="_blank" rel="noopener">FAIR data principles</a>,
+              <a href="https://www.cos.io/initiatives/prereg" target="_blank" rel="noopener">preregistration</a>, and
+              widely used <a href="https://www.achieve.org/files/AchieveOERRubrics.pdf" target="_blank" rel="noopener">OER rubrics</a>,
+              adapted for criminology and criminal justice.
+            </p>
+            <p>
+              Treat your result as a <strong>starting point for one concrete change</strong>. The most
+              valuable next step is usually small: deposit a postprint, attach a license, swap a paid
+              reading for a free one, write a short README.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <!-- ============================================================
+           Footer
+           ============================================================ -->
+      <div class="footer-note" id="footer-note">
+        A <a href="https://crimconsortium.com" target="_blank" rel="noopener">CrimConsortium</a> tool —
+        part of the same family as <a href="https://crimconsortium.github.io/faculty-explorer/" target="_blank" rel="noopener">Faculty Explorer</a>,
+        <a href="https://crimconsortium.github.io/mentor-match/" target="_blank" rel="noopener">Mentor Match</a>, and
+        <a href="https://crimconsortium.github.io/criminology-jobs/" target="_blank" rel="noopener">Criminology Jobs</a>.
+        Browse and post open criminology at <a href="https://crimrxiv.com" target="_blank" rel="noopener">CrimRxiv</a>.
+        Your answers stay in your browser — no analytics, no cookies, no storage, no network requests.
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
