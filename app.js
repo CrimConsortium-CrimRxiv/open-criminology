@@ -124,10 +124,8 @@
       text: (ctx) => statusVerb(ctx, 'How can a reader get the full output without paying?', 'How will a reader get the full output without paying?'),
       help: 'The single biggest openness signal: can anyone read or use it for free?',
       choices: [
-        { id: 'diamond', label: 'Free at the source — diamond / fully open (no fees to read, no fees to publish).', points: 6 },
-        { id: 'gold',    label: 'Free at the source — published open access with a CC license.', points: 6 },
-        { id: 'green',   label: 'A free version is on a repository (OSF, CrimRxiv, Zenodo, SSRN, institutional repo).', points: 5 },
-        { id: 'request', label: 'Available by emailing me or filling out a form.', points: 2 },
+        { id: 'cc_licensed', label: 'Free with a CC license (diamond, green, or gold).', points: 6 },
+        { id: 'bronze',  label: 'Free without a license (bronze).', points: 4 },
         { id: 'paywall', label: 'Behind a paywall only. No free version exists.', points: 0 },
       ],
       tags: ['access'],
@@ -139,10 +137,11 @@
       help: 'A license tells others what they may legally do with it. No license usually means "all rights reserved" by default.',
       choices: [
         { id: 'cc-by',    label: 'CC BY (or CC0) — anyone can reuse with attribution.', points: 4 },
-        { id: 'cc-nc-sa', label: 'CC with restrictions (CC BY-NC, CC BY-SA, or CC BY-NC-SA).', points: 3 },
+        { id: 'cc-nc-sa', label: 'CC with restrictions but allows derivatives (CC BY-NC, CC BY-SA, or CC BY-NC-SA).', points: 3 },
         { id: 'cc-nd',    label: 'CC BY-ND — no derivatives.', points: 2 },
         { id: 'publisher', label: 'Publisher’s default copyright terms (I did not retain rights).', points: 1 },
-        { id: 'none',     label: 'No license at all / I don’t know.', points: 0 },
+        { id: 'none',     label: 'No license at all.', points: 0 },
+        { id: 'unknown',  label: 'I don’t know what the license is.', points: 0 },
       ],
       tags: ['license'],
     },
@@ -169,8 +168,10 @@
       help: 'A preprint gets the work to readers immediately and protects you against access losses later.',
       choices: [
         { id: 'crimrxiv', label: 'Yes — on CrimRxiv (or another disciplinary preprint server).', points: 3 },
-        { id: 'general',  label: 'Yes — on SSRN, OSF, or another general preprint server.', points: 3 },
-        { id: 'institutional', label: 'Yes — on an institutional repository only.', points: 2 },
+        { id: 'general',  label: 'Yes — on Zenodo, OSF, or another general preprint server.', points: 3 },
+        { id: 'institutional', label: 'Yes — on an institutional repository.', points: 2 },
+        { id: 'social',   label: 'Yes — on a scholarly social network (ResearchGate, Academia.edu, etc.).', points: 2 },
+        { id: 'personal', label: 'Yes — on my personal website.', points: 2 },
         { id: 'no',       label: 'No, and I do not plan to.', points: 0 },
       ],
       tags: ['preprint'],
@@ -181,8 +182,9 @@
       text: (ctx) => statusVerb(ctx, 'Did you retain the right to share an open version (postprint or AAM)?', 'Will you retain the right to share an open version (postprint or AAM)?'),
       help: 'Many funders and institutions now require rights retention. It costs nothing and unlocks Green OA.',
       choices: [
-        { id: 'rrs', label: 'Yes — I attached a rights retention statement on submission.', points: 3 },
-        { id: 'check', label: 'Yes — I checked the journal allows a postprint and used it.', points: 2 },
+        { id: 'policy', label: 'Yes — an institutional or funder rights retention policy covers this output.', points: 3 },
+        { id: 'rrs',    label: 'Yes — I attached a rights retention statement on submission.', points: 3 },
+        { id: 'check',  label: 'Yes — I checked the journal allows a postprint and used it.', points: 2 },
         { id: 'no_dontknow', label: 'I did not check / I do not know.', points: 0 },
       ],
       tags: ['rights'],
@@ -195,7 +197,6 @@
       choices: [
         { id: 'link_both', label: 'Yes — working links to both data and code.', points: 3 },
         { id: 'link_one',  label: 'Yes — working link to one of them.', points: 2 },
-        { id: 'on_request', label: 'Only "available on request."', points: 1 },
         { id: 'no_statement', label: 'No data/code statement at all.', points: 0 },
         { id: 'na',        label: 'Not applicable (no data or code).', points: 2 },
       ],
@@ -209,10 +210,9 @@
       text: (ctx) => statusVerb(ctx, 'Where does the data live and how can someone use it?', 'Where will the data live and how will someone use it?'),
       help: 'Sharing in a trusted, indexed repository is much more reusable than a personal website.',
       choices: [
-        { id: 'repo_open', label: 'Trusted public repository (ICPSR, OSF, Zenodo, Dataverse, etc.) with open access.', points: 5 },
+        { id: 'repo_open', label: 'Trusted public repository (CrimRxiv, ICPSR, OSF, Zenodo, Dataverse, etc.) with open access.', points: 5 },
         { id: 'repo_restricted', label: 'Trusted repository, restricted/controlled access for sensitive data.', points: 4 },
         { id: 'personal_open', label: 'Personal/lab site, public download.', points: 2 },
-        { id: 'on_request', label: 'Available on request only.', points: 1 },
         { id: 'not_shared', label: 'Not shared / kept private.', points: 0 },
         { id: 'cannot_share', label: 'Cannot be shared due to legal or ethical limits — and that is documented.', points: 3 },
       ],
@@ -237,12 +237,11 @@
       id: 'r_code_share',
       appliesTo: { modes: ['research'], types: ['code', 'project'] },
       text: (ctx) => statusVerb(ctx, 'Where does the analysis code live?', 'Where will the analysis code live?'),
-      help: 'Public, versioned code with a DOI is the gold standard for reproducible analysis.',
+      help: 'Public, versioned code with a DOI or other persistent identifier is the gold standard for reproducible analysis.',
       choices: [
-        { id: 'repo_doi', label: 'Public version-controlled repo (GitHub/GitLab) and archived with a DOI (Zenodo/Software Heritage).', points: 4 },
-        { id: 'repo',    label: 'Public version-controlled repo, no DOI.', points: 3 },
+        { id: 'repo_doi', label: 'Public version-controlled repo (GitHub/GitLab) and archived with a persistent identifier — DOI, SWHID, or similar (Zenodo, Software Heritage, etc.).', points: 4 },
+        { id: 'repo',    label: 'Public version-controlled repo, no persistent identifier.', points: 3 },
         { id: 'upload',  label: 'Posted as a static upload (OSF, supplementary materials, etc.).', points: 2 },
-        { id: 'on_request', label: 'Available on request only.', points: 1 },
         { id: 'not_shared', label: 'Not shared.', points: 0 },
       ],
       tags: ['code', 'reuse'],
@@ -270,8 +269,7 @@
       help: 'Independent registries with date-stamps make a preregistration credible.',
       choices: [
         { id: 'rr',     label: 'Registered Report (peer-reviewed before data collection).', points: 5 },
-        { id: 'osf',    label: 'Public preregistration on OSF (or AsPredicted with a date stamp).', points: 4 },
-        { id: 'reg',    label: 'Other independent registry.', points: 3 },
+        { id: 'public', label: 'Public preregistration on an independent registry (OSF, AsPredicted, ClinicalTrials.gov, etc.).', points: 4 },
         { id: 'private', label: 'Private/embargoed preregistration.', points: 2 },
         { id: 'none',   label: 'No formal preregistration.', points: 0 },
       ],
@@ -290,21 +288,6 @@
       tags: ['preregistration', 'transparency'],
     },
 
-    // -- Other research output: lighter checks
-    {
-      id: 'r_other_format',
-      appliesTo: { modes: ['research'], types: ['other_research'] },
-      text: (ctx) => statusVerb(ctx, 'How is the output shared?', 'How will the output be shared?'),
-      choices: [
-        { id: 'open_repo', label: 'On an open, indexed repository (OSF, Zenodo, CrimRxiv).', points: 4 },
-        { id: 'own_site',  label: 'On a personal or institutional site, freely downloadable.', points: 3 },
-        { id: 'social',    label: 'Posted to social media or a blog only.', points: 2 },
-        { id: 'private',   label: 'Shared privately or by request.', points: 1 },
-        { id: 'not_shared', label: 'Not shared.', points: 0 },
-      ],
-      tags: ['access'],
-    },
-
     // -- Project-level extras (project covers many outputs)
     {
       id: 'r_project_dmp',
@@ -318,33 +301,6 @@
       tags: ['planning'],
     },
 
-    // -- Universal research extras
-    {
-      id: 'r_funding',
-      appliesTo: { modes: ['research'] },
-      statuses: ['finished', 'current'],
-      text: 'Are funding sources and conflicts of interest disclosed in the output?',
-      choices: [
-        { id: 'yes',    label: 'Yes — both funding and conflicts.', points: 2 },
-        { id: 'funding', label: 'Funding only.', points: 1 },
-        { id: 'na_self', label: 'Not applicable — no external funding or conflicts to disclose.', points: 2 },
-        { id: 'no',     label: 'Neither is disclosed.', points: 0 },
-      ],
-      tags: ['transparency'],
-    },
-    {
-      id: 'r_metadata',
-      appliesTo: { modes: ['research'] },
-      statuses: ['finished', 'current'],
-      text: 'Is the work indexed somewhere a stranger could actually find it (Google Scholar, ORCID, ROR, repository)?',
-      choices: [
-        { id: 'multi',  label: 'Yes — indexed in multiple discovery systems.', points: 2 },
-        { id: 'one',    label: 'Yes — one place.', points: 1 },
-        { id: 'no',     label: 'Not really.', points: 0 },
-      ],
-      tags: ['findable'],
-    },
-
     // ===============================================================
     // TEACHING — common to all teaching types
     // ===============================================================
@@ -355,8 +311,8 @@
       help: 'Money students must spend out of pocket — textbooks, access codes, course packs, reprints.',
       choices: [
         { id: 'zero',   label: '$0 — fully no-cost (ZTC).', points: 6 },
-        { id: 'low',    label: '$1–$25 (effectively low-cost, e.g., a single low-cost course pack).', points: 4 },
-        { id: 'mid',    label: '$26–$100.', points: 2 },
+        { id: 'low',    label: '$1–$40 (effectively low-cost, e.g., a single low-cost course pack).', points: 4 },
+        { id: 'mid',    label: '$41–$100.', points: 2 },
         { id: 'high',   label: '$101–$200.', points: 1 },
         { id: 'very_high', label: 'More than $200.', points: 0 },
       ],
@@ -368,11 +324,12 @@
       text: (ctx) => statusVerb(ctx, 'What license is on the material you created?', 'What license will be on the material you created?'),
       help: 'OER are formally defined by an open license that lets others reuse, revise, remix, and redistribute.',
       choices: [
-        { id: 'cc-by',    label: 'CC BY or CC0 — fully reusable with attribution.', points: 4 },
-        { id: 'cc-other', label: 'CC BY-SA, CC BY-NC, or CC BY-NC-SA.', points: 3 },
+        { id: 'cc-by',    label: 'CC BY (or CC0) — anyone can reuse with attribution.', points: 4 },
+        { id: 'cc-other', label: 'CC with restrictions but allows derivatives (CC BY-NC, CC BY-SA, or CC BY-NC-SA).', points: 3 },
         { id: 'cc-nd',    label: 'CC BY-ND — no derivatives.', points: 1 },
         { id: 'all_rights', label: 'All rights reserved (default copyright).', points: 0 },
-        { id: 'unknown',  label: 'I don’t know / no license stated.', points: 0 },
+        { id: 'none',     label: 'No license at all.', points: 0 },
+        { id: 'unknown',  label: 'I don’t know what the license is.', points: 0 },
       ],
       tags: ['license'],
     },
@@ -382,9 +339,9 @@
       text: (ctx) => statusVerb(ctx, 'Where does the material live?', 'Where will the material live?'),
       help: 'Open repositories make materials reachable by other instructors and durable beyond your course or institution.',
       choices: [
-        { id: 'oer_repo', label: 'An open OER repository (OER Commons, MERLOT, CrimRxiv, Pressbooks, etc.).', points: 4 },
-        { id: 'personal_open', label: 'A personal or institutional site, publicly downloadable.', points: 3 },
-        { id: 'lms_open', label: 'LMS or course shell that anyone can request and copy.', points: 2 },
+        { id: 'oer_repo', label: 'An open OER repository (CrimRxiv, OER Commons, MERLOT, Pressbooks, etc.).', points: 4 },
+        { id: 'personal_open', label: 'A personal or institutional site, publicly downloadable (including a posted course-export file).', points: 3 },
+        { id: 'lms_catalog', label: 'An LMS-to-LMS sharing catalog (Canvas Commons, D2L Sharing, etc.) — other instructors on that platform can import it automatically.', points: 2 },
         { id: 'lms_closed', label: 'Behind an LMS login, accessible only to enrolled students.', points: 1 },
         { id: 'not_shared', label: 'Not shared outside my classroom.', points: 0 },
       ],
@@ -412,7 +369,6 @@
       text: (ctx) => statusVerb(ctx, 'Can another instructor import or copy the course materials in one package?', 'Will another instructor be able to import or copy the course materials in one package?'),
       choices: [
         { id: 'shell_open', label: 'Yes — a Common Cartridge / Pressbook / similar package is publicly available.', points: 3 },
-        { id: 'shell_request', label: 'Yes — but only by emailing me.', points: 2 },
         { id: 'no',     label: 'No — materials are scattered and would need to be rebuilt.', points: 0 },
       ],
       tags: ['reuse'],
@@ -426,7 +382,6 @@
       choices: [
         { id: 'public_open', label: 'Yes — public web page or repository, with an open license.', points: 4 },
         { id: 'public_no_license', label: 'Yes — public, no license stated.', points: 2 },
-        { id: 'request', label: 'Available on request only.', points: 1 },
         { id: 'no',     label: 'No — not shared outside students.', points: 0 },
       ],
       tags: ['access', 'license'],
@@ -454,7 +409,7 @@
       text: (ctx) => statusVerb(ctx, 'How is the textbook published?', 'How will the textbook be published?'),
       choices: [
         { id: 'oer',    label: 'Open textbook with a CC license, free download.', points: 6 },
-        { id: 'oa',     label: 'Open-access edition from a publisher (free PDF + paid print).', points: 5 },
+        { id: 'oa',     label: 'Free download, but no license stated.', points: 4 },
         { id: 'low',    label: 'Affordable print/e-book (under ~$40).', points: 3 },
         { id: 'standard', label: 'Standard commercial textbook.', points: 1 },
         { id: 'access_code', label: 'Commercial with required access code.', points: 0 },
@@ -498,7 +453,7 @@
       choices: [
         { id: 'full', label: 'Yes — learning objectives, item map, and rubric are public or shareable.', points: 3 },
         { id: 'partial', label: 'Some documentation, but not all.', points: 2 },
-        { id: 'none', label: 'No — the instrument speaks for itself.', points: 0 },
+        { id: 'none', label: 'No.', points: 0 },
       ],
       tags: ['documentation'],
     },
@@ -525,7 +480,7 @@
       choices: [
         { id: 'audited', label: 'Yes — audited; alt text and captions are in place.', points: 3 },
         { id: 'partial', label: 'Some accessibility features.', points: 2 },
-        { id: 'none', label: 'No / not yet.', points: 0 },
+        { id: 'none', label: 'No.', points: 0 },
       ],
       tags: ['accessibility'],
     },
@@ -544,19 +499,6 @@
         { id: 'no',   label: 'Neither.', points: 0 },
       ],
       tags: ['reuse'],
-    },
-    {
-      id: 'x_known',
-      appliesTo: { modes: ['research', 'teaching'] },
-      statuses: ['finished'],
-      text: 'Has the output been used or cited by someone other than you?',
-      help: 'Real-world reuse is the strongest signal that openness paid off. If too new to know, pick "Too new to tell."',
-      choices: [
-        { id: 'yes',  label: 'Yes — there is evidence of reuse, citation, or adoption.', points: 2 },
-        { id: 'too_new', label: 'Too new to tell.', points: 1 },
-        { id: 'no',   label: 'Not that I know of.', points: 0 },
-      ],
-      tags: ['impact'],
     },
   ];
 
@@ -696,17 +638,16 @@
   // ----------------------------------------------------------------
   const SUGGESTIONS = {
     r_access: {
-      best: 'diamond',
+      best: 'cc_licensed',
       tip: (ctx, chosen) => {
-        if (chosen === 'gold' || chosen === 'green') return 'Make sure the open copy is on a discipline-relevant repository like CrimRxiv so criminologists can actually find it.';
-        if (chosen === 'request') return 'Replace "available on request" with a public deposit on CrimRxiv, OSF, or your institutional repository. This is usually free and takes under 30 minutes.';
-        return 'Post a free version (preprint, postprint, or AAM) on CrimRxiv or a similar repository. This is the highest-ROI change you can make.';
+        if (chosen === 'bronze') return 'Free is good; free with a CC license is better. Attach a CC license to the open copy so others can legally reuse and adapt it.';
+        return 'Post a free, CC-licensed version (preprint, postprint, or AAM) on CrimRxiv or a similar repository. This is the highest-ROI change you can make.';
       },
     },
     r_license: {
       best: 'cc-by',
       tip: (ctx, chosen) => {
-        if (chosen === 'none' || chosen === 'publisher') return 'Attach a Creative Commons license (CC BY is the default for open science). With no license, the default is "all rights reserved," which suppresses reuse.';
+        if (chosen === 'none' || chosen === 'publisher' || chosen === 'unknown') return 'Attach a Creative Commons license (CC BY is the default for open science). Without a clear license, the default is "all rights reserved," which suppresses reuse.';
         return 'Consider CC BY (or CC0) instead of more restrictive variants. NC and ND clauses block legitimate teaching, translation, and reproducibility work.';
       },
     },
@@ -717,20 +658,20 @@
     r_paper_preprint: {
       best: 'crimrxiv',
       tip: (ctx, chosen) => {
-        if (chosen === 'general' || chosen === 'institutional') return 'Also cross-deposit on CrimRxiv — discoverability inside criminology is much higher there.';
+        if (chosen === 'general' || chosen === 'institutional' || chosen === 'social' || chosen === 'personal') return 'Also cross-deposit on CrimRxiv — discoverability inside criminology is much higher there, and scholarly social networks and personal sites are not durable archives.';
         return 'Post a preprint on CrimRxiv. It is free, indexed by Google Scholar, and gets the work to readers immediately.';
       },
     },
     r_paper_rights: {
-      best: 'rrs',
-      tip: () => 'Add a rights retention statement on your next submission (one sentence in the cover letter and on the manuscript). It costs nothing and protects your right to share a free copy.',
+      best: 'policy',
+      tip: (ctx, chosen) => {
+        if (chosen === 'check') return 'Pair the journal’s postprint policy with a rights retention statement on your next submission. Policies change; a retention statement is portable.';
+        return 'Add a rights retention statement on your next submission (one sentence in the cover letter and on the manuscript). If your institution or funder has a rights retention policy, cite it.';
+      },
     },
     r_paper_data_link: {
       best: 'link_both',
-      tip: (ctx, chosen) => {
-        if (chosen === 'on_request') return 'Replace "available on request" with a working link or DOI. Studies show requests are honored only a minority of the time.';
-        return 'Add a Data Availability Statement that points to working links or DOIs for both data and code.';
-      },
+      tip: () => 'Add a Data Availability Statement that points to working links or DOIs for both data and code.',
     },
     r_data_share: {
       best: 'repo_open',
@@ -765,23 +706,10 @@
       best: 'full',
       tip: () => 'Strengthen the preregistration by adding operational decision rules for each hypothesis (exact sample size logic, exclusion criteria, analysis steps).',
     },
-    r_other_format: {
-      best: 'open_repo',
-      tip: () => 'Deposit slides, posters, or briefs on Zenodo, OSF, or CrimRxiv so they get a DOI and survive site moves.',
-    },
     r_project_dmp: {
       best: 'yes_public',
       tip: () => 'Write a short data-management / open-science plan (one page is enough) and post it on OSF alongside the project.',
     },
-    r_funding: {
-      best: 'yes',
-      tip: () => 'Add a short funding and conflicts statement to the output. It builds trust and is required by most journals and many funders.',
-    },
-    r_metadata: {
-      best: 'multi',
-      tip: () => 'Make sure the work appears in at least Google Scholar, your ORCID record, and a stable repository. These three cover most reader paths.',
-    },
-
     t_cost: {
       best: 'zero',
       tip: (ctx, chosen) => {
@@ -792,15 +720,15 @@
     t_license: {
       best: 'cc-by',
       tip: (ctx, chosen) => {
-        if (chosen === 'all_rights' || chosen === 'unknown') return 'Add a Creative Commons license to the materials you created. CC BY is the standard for OER; CC BY-SA and CC BY-NC are also common.';
+        if (chosen === 'all_rights' || chosen === 'none' || chosen === 'unknown') return 'Add a Creative Commons license to the materials you created. CC BY is the standard for OER; CC BY-SA and CC BY-NC are also common.';
         return 'Move from a more restrictive CC variant toward CC BY where possible — ND in particular blocks adaptation for new courses and audiences.';
       },
     },
     t_access: {
       best: 'oer_repo',
       tip: (ctx, chosen) => {
-        if (chosen === 'lms_closed') return 'Move the material out of the LMS and into a public, indexed location. LMS-only materials disappear when students graduate or platforms change.';
-        return 'Deposit on an OER repository (OER Commons, MERLOT, Pressbooks, or CrimRxiv where appropriate). Repositories add discoverability and persistence your site cannot.';
+        if (chosen === 'lms_closed' || chosen === 'lms_catalog') return 'Move the material out of LMS-only channels and into a public, indexed location like CrimRxiv or OER Commons. LMS catalogs are open to a club, not to the world.';
+        return 'Deposit on an OER repository (CrimRxiv, OER Commons, MERLOT, Pressbooks where appropriate). Repositories add discoverability and persistence your site cannot.';
       },
     },
     t_course_oer: {
@@ -850,10 +778,6 @@
     x_reuse_invite: {
       best: 'yes',
       tip: () => 'Add two short lines to the output: a recommended citation and a contact for reuse questions. This converts passive availability into active reuse.',
-    },
-    x_known: {
-      best: 'yes',
-      tip: () => 'Talk about the work publicly — a CrimRxiv post, a Bluesky thread, a short blog. Citations and adoption follow visibility, and the open version is what people share.',
     },
   };
 
@@ -1322,10 +1246,7 @@
       r_code_runs: 'Reproducibility setup',
       r_prereg_where: 'Where the preregistration lives',
       r_prereg_specifics: 'Preregistration specifics',
-      r_other_format: 'Where the output is shared',
       r_project_dmp: 'Open-science plan',
-      r_funding: 'Funding and conflicts disclosure',
-      r_metadata: 'Discoverability',
 
       t_cost: 'Cost to students',
       t_license: 'License on your materials',
@@ -1342,7 +1263,6 @@
       t_accessibility: 'Accessibility',
 
       x_reuse_invite: 'Invitation to reuse',
-      x_known: 'Real-world reuse',
     };
     return map[q.id] || 'Improvement opportunity';
   }
