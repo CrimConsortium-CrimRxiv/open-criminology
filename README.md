@@ -1,4 +1,4 @@
-# How Open Is Your Criminology? — A Utilitarian Assessment
+# Is Your Criminology Open? — A Utilitarian Assessment
 
 A CrimConsortium tool. A single-page, fully client-side assessment that helps criminology
 researchers and teachers evaluate one specific output (research or teaching) and improve

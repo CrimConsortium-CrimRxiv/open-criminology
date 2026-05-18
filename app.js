@@ -1,5 +1,5 @@
 /* =============================================================
-   How Open Is Your Criminology? — A Utilitarian Assessment
+   Is Your Criminology Open? — A Utilitarian Assessment
    A CrimConsortium tool. Fully client-side. No storage, no network.
 
    Design / behavior notes:
@@ -1420,7 +1420,7 @@
   .footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid #d4cfc2; font-size: .8rem; color:#5a5750; }
   a { color: #9c4f08; }
 </style></head><body>
-  <div class="eyebrow">CrimConsortium — How Open Is Your Criminology?</div>
+  <div class="eyebrow">CrimConsortium — Is Your Criminology Open?</div>
   <h1>${escapeHtml(item)}</h1>
   <div class="meta">${escapeHtml(ctxLabel)} · Generated ${escapeHtml(date)}</div>
 
@@ -1445,7 +1445,7 @@
 
   <div class="footer">
     A <a href="https://crimconsortium.com">CrimConsortium</a> tool —
-    <a href="https://crimconsortium.github.io/open-criminology/">How Open Is Your Criminology?</a>.
+    <a href="https://crimconsortium.github.io/open-criminology/">Is Your Criminology Open?</a>.
     Browse and post open criminology at <a href="https://crimrxiv.com">CrimRxiv</a>.
     This summary was generated entirely in the user's browser. No data was saved or sent.
   </div>
