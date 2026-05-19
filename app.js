@@ -1602,7 +1602,7 @@
   <div class="cert">
     <div class="eyebrow">CrimConsortium — Open Criminology</div>
     <div class="title">Certificate of Open Practice</div>
-    <div class="subtitle">Awarded for a finished criminology output that meets the Open or Very Open band on the CrimConsortium Open Criminology Assessment.</div>
+    <div class="subtitle">Awarded for a finished criminology output that meets the Open or Very Open band on the Open Criminology Self-Assessment Tool.</div>
 
     <div class="body">
       <div class="awarded">This certifies that</div>
