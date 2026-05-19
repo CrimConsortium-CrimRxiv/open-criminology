@@ -164,7 +164,8 @@
     {
       id: 'r_paper_preprint',
       appliesTo: { modes: ['research'], types: ['paper'] },
-      text: (ctx) => statusVerb(ctx, 'Did you post a preprint?', 'Will you post a preprint?'),
+      multi: true,
+      text: (ctx) => statusVerb(ctx, 'Did you post a preprint? (Select all that apply.)', 'Will you post a preprint? (Select all that apply.)'),
       help: 'A preprint gets the work to readers immediately and protects you against access losses later.',
       choices: [
         { id: 'crimrxiv', label: 'Yes — on CrimRxiv (or another disciplinary preprint server).', points: 3 },
@@ -179,12 +180,13 @@
     {
       id: 'r_paper_rights',
       appliesTo: { modes: ['research'], types: ['paper'] },
-      text: (ctx) => statusVerb(ctx, 'Did you retain the right to share an open version (postprint or AAM)?', 'Will you retain the right to share an open version (postprint or AAM)?'),
+      text: (ctx) => statusVerb(ctx, 'Did you have the right to immediately share an open version (postprint or AAM)?', 'Will you have the right to immediately share an open version (postprint or AAM)?'),
       help: 'Many funders and institutions now require rights retention. It costs nothing and unlocks Green OA.',
       choices: [
+        { id: 'vor_oa', label: 'Not applicable — the version of record is open access.', points: 3 },
         { id: 'policy', label: 'Yes — an institutional or funder rights retention policy covers this output.', points: 3 },
         { id: 'rrs',    label: 'Yes — I attached a rights retention statement on submission.', points: 3 },
-        { id: 'check',  label: 'Yes — I checked the journal allows a postprint and used it.', points: 2 },
+        { id: 'check',  label: 'Yes — I checked the journal has no embargo.', points: 2 },
         { id: 'no_dontknow', label: 'I did not check / I do not know.', points: 0 },
       ],
       tags: ['rights'],
@@ -207,7 +209,8 @@
     {
       id: 'r_data_share',
       appliesTo: { modes: ['research'], types: ['data', 'project'] },
-      text: (ctx) => statusVerb(ctx, 'Where does the data live and how can someone use it?', 'Where will the data live and how will someone use it?'),
+      multi: true,
+      text: (ctx) => statusVerb(ctx, 'Where does the data live and how can someone use it? (Select all that apply.)', 'Where will the data live and how will someone use it? (Select all that apply.)'),
       help: 'Sharing in a trusted, indexed repository is much more reusable than a personal website.',
       choices: [
         { id: 'repo_open', label: 'Trusted public repository (CrimRxiv, ICPSR, OSF, Zenodo, Dataverse, etc.) with open access.', points: 5 },
@@ -236,7 +239,8 @@
     {
       id: 'r_code_share',
       appliesTo: { modes: ['research'], types: ['code', 'project'] },
-      text: (ctx) => statusVerb(ctx, 'Where does the analysis code live?', 'Where will the analysis code live?'),
+      multi: true,
+      text: (ctx) => statusVerb(ctx, 'Where does the analysis code live? (Select all that apply.)', 'Where will the analysis code live? (Select all that apply.)'),
       help: 'Public, versioned code with a DOI or other persistent identifier is the gold standard for reproducible analysis.',
       choices: [
         { id: 'repo_doi', label: 'Public version-controlled repo (GitHub/GitLab) and archived with a persistent identifier — DOI, SWHID, or similar (Zenodo, Software Heritage, etc.).', points: 4 },
@@ -336,7 +340,8 @@
     {
       id: 't_access',
       appliesTo: { modes: ['teaching'] },
-      text: (ctx) => statusVerb(ctx, 'Where does the material live?', 'Where will the material live?'),
+      multi: true,
+      text: (ctx) => statusVerb(ctx, 'Where does the material live? (Select all that apply.)', 'Where will the material live? (Select all that apply.)'),
       help: 'Open repositories make materials reachable by other instructors and durable beyond your course or institution.',
       choices: [
         { id: 'oer_repo', label: 'An open OER repository (CrimRxiv, OER Commons, MERLOT, Pressbooks, etc.).', points: 4 },
@@ -938,18 +943,41 @@
     `;
   }
 
+  // ---- Multi-select helpers ----------------------------------------
+  // state.answers[q.id] is a string id for single-select questions,
+  // or an array of ids for multi-select questions. These helpers
+  // normalize that so the rest of the app can treat both uniformly.
+  function getSelectedIds(q) {
+    const v = state.answers[q.id];
+    if (Array.isArray(v)) return v;
+    if (v == null || v === '') return [];
+    return [v];
+  }
+  function getSelectedChoices(q) {
+    const ids = getSelectedIds(q);
+    return ids.map((id) => q.choices.find((c) => c.id === id)).filter(Boolean);
+  }
+  function getBestSelectedChoice(q) {
+    const cs = getSelectedChoices(q);
+    if (cs.length === 0) return null;
+    return cs.reduce((a, b) => (b.points > a.points ? b : a));
+  }
+
   function renderQuestionStep(q) {
     const ctx = { mode: state.mode, status: state.status, type: state.type };
     const text = typeof q.text === 'function' ? q.text(ctx) : q.text;
     const help = q.help || '';
+    const selectedIds = new Set(getSelectedIds(q));
+    const inputType = q.multi ? 'checkbox' : 'radio';
+    const groupRole = q.multi ? 'group' : 'radiogroup';
     return `
       <div class="q-eyebrow">Item: ${escapeHtml(state.itemName) || '—'}</div>
       <h2 class="q-title">${escapeHtml(text)}</h2>
       ${help ? `<p class="q-help">${escapeHtml(help)}</p>` : ''}
-      <div class="option-list" role="radiogroup">
+      <div class="option-list" role="${groupRole}">
         ${q.choices.map((c) => `
           <label class="option">
-            <input type="radio" name="q-${q.id}" value="${c.id}" ${state.answers[q.id] === c.id ? 'checked' : ''}>
+            <input type="${inputType}" name="q-${q.id}" value="${c.id}" ${selectedIds.has(c.id) ? 'checked' : ''}>
             <div class="option-body">
               <span class="option-label">${escapeHtml(c.label)}</span>
             </div>
@@ -1006,9 +1034,16 @@
       });
       input.focus();
     } else if (step.kind === 'q') {
-      els.quizCard.querySelectorAll(`input[name="q-${step.q.id}"]`).forEach((el) => {
+      const q = step.q;
+      const inputs = els.quizCard.querySelectorAll(`input[name="q-${q.id}"]`);
+      inputs.forEach((el) => {
         el.addEventListener('change', () => {
-          state.answers[step.q.id] = el.value;
+          if (q.multi) {
+            const checked = Array.from(inputs).filter((i) => i.checked).map((i) => i.value);
+            state.answers[q.id] = checked;
+          } else {
+            state.answers[q.id] = el.value;
+          }
           refreshNextEnabled(step);
         });
       });
@@ -1020,7 +1055,7 @@
     if (step.kind === 'status') return !!state.status;
     if (step.kind === 'type')   return !!state.type;
     if (step.kind === 'name')   return state.itemName.trim().length > 0;
-    if (step.kind === 'q')      return !!state.answers[step.q.id];
+    if (step.kind === 'q')      return getSelectedIds(step.q).length > 0;
     return false;
   }
 
@@ -1119,12 +1154,17 @@
     const ctx = { mode: state.mode, status: state.status, type: state.type };
     const qs = filterQuestions(ctx);
     const perQ = qs.map((q) => {
-      const chosen = state.answers[q.id];
-      const choice = q.choices.find((c) => c.id === chosen);
-      const earned = choice ? choice.points : 0;
+      const selectedChoices = getSelectedChoices(q);
+      const bestSelected = getBestSelectedChoice(q);
+      // For multi-select questions, the score is the max of the selected
+      // choices (openness is set by the most open venue, not multiplied
+      // by number of venues). For single-select it's just the one choice.
+      const choice = bestSelected;
+      const earned = bestSelected ? bestSelected.points : 0;
+      const chosen = bestSelected ? bestSelected.id : undefined;
       const best = q.choices.find((c) => c.points === q.maxPoints);
       const lostPoints = q.maxPoints - earned;
-      return { q, chosen, choice, earned, best, lostPoints };
+      return { q, chosen, choice, selectedChoices, earned, best, lostPoints };
     });
     const earnedSum = perQ.reduce((s, r) => s + r.earned, 0);
     const maxSum = perQ.reduce((s, r) => s + r.q.maxPoints, 0);
@@ -1231,6 +1271,18 @@
     `;
   }
 
+  // Format the user's answer for display. For multi-select questions,
+  // join every selected choice label with a bullet so the user sees
+  // everything they picked, with the highest-scoring one first.
+  function formatRowAnswer(row) {
+    if (row.q.multi) {
+      const cs = (row.selectedChoices || []).slice().sort((a, b) => b.points - a.points);
+      if (cs.length === 0) return '(no answer)';
+      return cs.map((c) => c.label).join(' · ');
+    }
+    return row.choice ? row.choice.label : '(no answer)';
+  }
+
   // Short, scannable label for each question to head a suggestion bullet.
   function shortQuestionLabel(q) {
     const map = {
@@ -1294,7 +1346,7 @@
             <div class="score-row ${row.earned === row.q.maxPoints ? 'earned' : 'missed'}">
               <div class="score-row-text">
                 <strong>${escapeHtml(shortQuestionLabel(row.q))}.</strong>
-                <div class="score-row-text-sub">${escapeHtml(row.choice ? row.choice.label : '(no answer)')}</div>
+                <div class="score-row-text-sub">${escapeHtml(formatRowAnswer(row))}</div>
               </div>
               <div class="score-row-points"><strong>${row.earned}</strong> / ${row.q.maxPoints}</div>
             </div>
@@ -1393,7 +1445,7 @@
     const breakdown = r.perQ.map((row) => `
       <tr>
         <td>${escapeHtml(shortQuestionLabel(row.q))}</td>
-        <td>${escapeHtml(row.choice ? row.choice.label : '(no answer)')}</td>
+        <td>${escapeHtml(formatRowAnswer(row))}</td>
         <td style="text-align:right; font-variant-numeric:tabular-nums;">${row.earned} / ${row.q.maxPoints}</td>
       </tr>
     `).join('');
