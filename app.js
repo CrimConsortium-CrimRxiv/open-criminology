@@ -1497,7 +1497,7 @@
 
   <div class="footer">
     A <a href="https://crimconsortium.com">CrimConsortium</a> tool —
-    <a href="https://crimconsortium.github.io/open-criminology/">Is Your Criminology Open?</a>.
+    <a href="https://open.crimconsortium.com/">Is Your Criminology Open?</a>.
     Browse and post open criminology at <a href="https://crimrxiv.com">CrimRxiv</a>.
     This summary was generated entirely in the user's browser. No data was saved or sent.
   </div>

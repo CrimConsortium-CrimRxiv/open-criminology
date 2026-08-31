@@ -4,11 +4,11 @@ A CrimConsortium tool. A single-page, fully client-side assessment that helps cr
 researchers and teachers evaluate one specific output (research or teaching) and improve
 how open and useful it is for the greater good.
 
-- Live site: https://crimconsortium.github.io/open-criminology/
+- Live site: https://open.crimconsortium.com/
 - Part of the same family as the
-  [Faculty Explorer](https://crimconsortium.github.io/faculty-explorer/),
-  [Mentor Match](https://crimconsortium.github.io/mentor-match/), and
-  [Criminology Jobs](https://crimconsortium.github.io/criminology-jobs/) dashboards.
+  [Faculty Explorer](https://faculty.crimconsortium.com/),
+  [Mentor Match](https://mentors.crimconsortium.com/), and
+  [Criminology Jobs](https://jobs.crimconsortium.com/) dashboards.
 
 ## What it does
 
